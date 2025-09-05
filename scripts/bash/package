@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+location=$(which $1)
+dpkg -S "$location"
