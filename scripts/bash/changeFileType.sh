@@ -4,7 +4,7 @@ startExtension=$1
 endExtension=$2
 
 if [ "$startExtension" == "-h" ] || [ "$startExtension" == "--help" ]; then
-	echo "$(changeFileType-help)"
+	less changeFileType-help
 	exit 1
 elif [ "$startExtension" == "-s" ] || [ "$startExtension" == "--strip" ]; then
 	startExtension=$endExtension
