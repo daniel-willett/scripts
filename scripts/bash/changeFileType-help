@@ -1,0 +1,19 @@
+changeFileType
+
+NAME
+	changeFileType
+
+SYNOPSIS
+	changeFileType TYPE1 TYPE2
+	changeFileType [OPTIONS] TYPE
+
+DESCRIPTION
+	This changes the file extension within a directory from TYPE1 to TYPE2
+
+OPTIONS
+	-h, --help
+		Output this help file
+	-s, --strip
+		Will strip all the files in the directory from TYPE to no file extension
+	-a, --add
+		Will add all the files in the directory from no file extension to TYPE
