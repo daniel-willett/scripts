@@ -1,92 +1,82 @@
 #!/usr/bin/env bash
 
+default() {
+	startExtension=$1
+	endExtension=$2
+	for file in *."$startExtension" ; do
+		mv -- "$file" "${file%.$startExtension}.$endExtension"
+	done
+	echo "Moved all files within this directory with extension $startExtension to $endExtension"
+}
+
+stripFunc(){
+	startExtension=$1
+	for file in *."$startExtension" ; do
+                mv -- "$file" "${file%.$startExtension}"
+        done
+	echo "Stripped all files within this directory with extension $startExtension to no extension"
+}
+
+addFunc(){
+	endExtension=$1
+	for file in * ; do
+                if [[ -f "$file" && "$file" != *.* ]]; then
+                        mv -- "$file" "$file.$endExtension"
+                fi
+        done
+	echo "Added all files within this directory with extension no extension to $startExtension extension"
+}
 
 ## https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash?page=1&tab=scoredesc#tab-top
+## https://www.gnu.org/software/bash/manual/bash.html#Special-Parameters
+## https://www.pluralsight.com/resources/blog/cloud/conditions-in-bash-scripting-if-statements#h-table-of-conditions
 
-
-#options --longer/-l
+#options --option/-o
 #requires at least 1 argument
-LONGOPTS=help,strip,:add
+LONGOPTS=help,strip,add
 OPTIONS=hsa
 
 #We store the output
 #Activate quoting/enhanced mode by "--options"
 #pass arguments only via   -- "$@"   to separate them correctly
-#if getopt fails, it complains itself ot stderr
 PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@") || exit 2
 
 #read getopt's output this way to handle quoting right:
 eval set -- "$PARSED"
 
-#initialise
-h=false s=false a=false
-
 while true; do
-	case "$1" in
-		-h|--help)
-			h=true
+        case "$1" in
+                -h|--help)
+			less changeFileType-help
+                        exit
+                        ;;
+                -s|--strip)
 			shift
-			;;
-		-s|--strip)
-			s=true
-			shift
-			;;
-		-a|--add)
-			a=true
-			shift
-			;;
-		--)
-			shift
+			if [[ $# -ne 2 ]]; then
+				echo "-s/--strip requires only 1 file extension input and cannot be combined with -a/--add "
+				exit 4
+			fi
+			stripFunc "$2"
 			break
-			;;
-		*)
-			echo "Error"
-			exit 3
-			;;
-	esac
+                        ;;
+                -a|--add)
+			shift
+			if [[ $# -ne 2 ]]; then
+                                echo "-a/--add requires only 1 file extension input and cannot be combined with -s/--strip"
+                                exit 4
+                        fi
+			addFunc "$2"
+			break
+                        ;;
+                --)
+	                shift
+			default "$1" "$2"
+                        break
+                        ;;
+                *)
+                        echo "Error"
+                        exit 3
+                        ;;
+        esac
 done
 
-#handle non-option arguments
-if [[ $# -ne 1]]; then
-	echo "$0: a single input file is required."
-	exit 4
-fi
-
-echo "verbose: $v, force: $f, debug: $d, in: $1, out $2"
-
-#
-#=======================
-#
-#=======================
-
-startExtension=$1
-endExtension=$2
-
-if [ "$startExtension" == "-h" ] || [ "$startExtension" == "--help" ]; then
-	less changeFileType-help
-	exit 1
-elif [ "$startExtension" == "-s" ] || [ "$startExtension" == "--strip" ]; then
-	startExtension=$endExtension
-	for file in *."$startExtension" ; do
-		mv -- "$file" "${file%.$startExtension}"
-	done
-	echo "Stripped all files within this directory with extension $startExtension to no extension"
-	exit 1
-elif [ "$startExtension" == "-a" ] || [ "$startExtension" == "--add" ]; then
-	for file in * ; do
-		if [[ -f "$file" && "$file" != *.* ]]; then
-			mv -- "$file" "$file.$endExtension"
-		fi
-	done
-	echo "Added all files within this directory with extension no extension to $startExtension extension"
-	exit 1
-
-
-fi
-
-
-for file in *."$startExtension" ; do 
-	mv -- "$file" "${file%.$startExtension}.$endExtension"
-done
-echo "Moved all files within this directory with extension $startExtension to $endExtension"
-exit 1
