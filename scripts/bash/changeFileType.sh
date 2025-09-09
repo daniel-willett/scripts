@@ -62,14 +62,14 @@ while true; do
                 -a|--add)
 			shift
 			if [[ $# -ne 2 ]]; then
-                                echo "-a/--add requires only 1 file extension input and cannot be combined with -s/--strip"
-                                exit 4
-                        fi
+				echo "-a/--add requires only 1 file extension input and cannot be combined with -s/--strip"
+				exit 4
+			fi
 			addFunc "$2"
 			break
                         ;;
                 --)
-	                shift
+			shift
 			default "$1" "$2"
                         break
                         ;;
