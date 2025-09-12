@@ -4,6 +4,9 @@ default() {
 	startExtension=$1
 	endExtension=$2
 	for file in *."$startExtension" ; do
+		if [[ $v == true ]]; then
+			echo "$file --> ${file%.$startExtension}.$endExtension"
+		fi
 		mv -- "$file" "${file%.$startExtension}.$endExtension"
 	done
 	echo "Moved all files within this directory with extension $startExtension to $endExtension"
@@ -12,6 +15,9 @@ default() {
 stripFunc(){
 	startExtension=$1
 	for file in *."$startExtension" ; do
+		if [[ $v == true ]]; then
+			echo "$file --> ${file%.$startExtension}"
+		fi
                 mv -- "$file" "${file%.$startExtension}"
         done
 	echo "Stripped all files within this directory with extension $startExtension to no extension"
@@ -21,10 +27,13 @@ addFunc(){
 	endExtension=$1
 	for file in * ; do
                 if [[ -f $file && $file != *.* ]]; then
+			if [[ $v == true ]]; then
+				echo "$file --> $file.$endExtension"
+			fi
                         mv -- "$file" "$file.$endExtension"
                 fi
         done
-	echo "Added all files within this directory with extension no extension to $startExtension extension"
+	echo "Added all files within this directory with no extension to $endExtension extension"
 }
 
 ## https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash?page=1&tab=scoredesc#tab-top
@@ -34,8 +43,8 @@ addFunc(){
 
 #options --option/-o
 #requires at least 1 argument
-LONGOPTS=help,strip,add
-OPTIONS=hsa
+LONGOPTS=help,strip,add,verbose
+OPTIONS=hsav
 
 #We store the output
 #Activate quoting/enhanced mode by "--options"
@@ -47,6 +56,7 @@ eval set -- "$PARSED"
 
 s=false
 a=false
+v=false
 
 while true; do
         case "$1" in
@@ -62,6 +72,10 @@ while true; do
 			shift
 			a=true
                         ;;
+		-v|verbose)
+			shift
+			v=true
+			;;
                 --)
 			shift
                         break
