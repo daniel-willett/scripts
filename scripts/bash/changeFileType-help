@@ -19,3 +19,5 @@ OPTIONS
 		Will add all the files in the directory from no file extension to TYPE
 	-v, --verbose
 		Prints off each change to the terminal
+	-r, --recursive
+		Will go through each subdirectory of where the program is run and re-run in those subdirectories
