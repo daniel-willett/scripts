@@ -36,6 +36,18 @@ addFunc(){
 	echo "Added all files within this directory with no extension to $endExtension extension"
 }
 
+recursiveFunc() {
+	current=pwd
+        for d in *; do
+                if [[ -d $d ]]; then
+                        echo "$d"
+                        cd $d
+                        recursiveFunc
+                        cd ..
+                fi
+        done
+}
+
 ## https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash?page=1&tab=scoredesc#tab-top
 ## https://www.gnu.org/software/bash/manual/bash.html#Special-Parameters
 ## https://www.pluralsight.com/resources/blog/cloud/conditions-in-bash-scripting-if-statements#h-table-of-conditions
@@ -43,8 +55,8 @@ addFunc(){
 
 #options --option/-o
 #requires at least 1 argument
-LONGOPTS=help,strip,add,verbose
-OPTIONS=hsav
+LONGOPTS=help,strip,add,verbose,recursive
+OPTIONS=hsavr
 
 #We store the output
 #Activate quoting/enhanced mode by "--options"
@@ -57,6 +69,7 @@ eval set -- "$PARSED"
 s=false
 a=false
 v=false
+r=false
 
 while true; do
         case "$1" in
@@ -72,9 +85,13 @@ while true; do
 			shift
 			a=true
                         ;;
-		-v|verbose)
+		-v|--verbose)
 			shift
 			v=true
+			;;
+		-r|--recursive)
+			shift
+			r=true
 			;;
                 --)
 			shift
@@ -90,6 +107,8 @@ done
 if [[ $a == true && $s == true ]]; then
 	echo "-a/--add and -s/--strip aren't compatible. Pick one"
 	exit
+elif [[ $r == true ]]; then
+	recursiveFunc
 elif [[ $a == true ]]; then
 	if [[ $# -ne 1 ]]; then
 		echo "-a/--add requires only 1 file extension input"
