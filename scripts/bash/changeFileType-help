@@ -17,3 +17,5 @@ OPTIONS
 		Will strip all the files in the directory from TYPE to no file extension
 	-a, --add
 		Will add all the files in the directory from no file extension to TYPE
+	-v, --verbose
+		Prints off each change to the terminal
