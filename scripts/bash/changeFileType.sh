@@ -9,7 +9,9 @@ default() {
 		fi
 		mv -- "$file" "${file%.$startExtension}.$endExtension"
 	done
-	echo "Moved all files within this directory with extension $startExtension to $endExtension"
+	if [[ $v == true ]]; then
+		echo "Moved all files within this directory with extension $startExtension to $endExtension"
+	fi
 }
 
 stripFunc(){
@@ -20,7 +22,9 @@ stripFunc(){
 		fi
                 mv -- "$file" "${file%.$startExtension}"
         done
-	echo "Stripped all files within this directory with extension $startExtension to no extension"
+	if [[ $v == true ]]; then
+		echo "Stripped all files within this directory with extension $startExtension to no extension"
+	fi
 }
 
 addFunc(){
@@ -33,16 +37,26 @@ addFunc(){
                         mv -- "$file" "$file.$endExtension"
                 fi
         done
-	echo "Added all files within this directory with no extension to $endExtension extension"
+	if [[ $v == true ]]; then
+		echo "Added all files within this directory with no extension to $endExtension extension"
+	fi
 }
 
 recursiveFunc() {
-	current=pwd
         for d in *; do
                 if [[ -d $d ]]; then
-                        echo "$d"
-                        cd $d
-                        recursiveFunc
+			if [[ $v == true ]]; then
+				echo "Moving to $d"
+			fi
+			cd $d
+			if [[ $1 == "a" ]]; then
+				addFunc "$2"
+			elif [[ $1 == "s" ]]; then
+				stripFunc "$2"
+			elif [[ $1 == "d" ]]; then
+				default "$2" "$3"
+			fi
+                        recursiveFunc "$1" "$2" "$3"
                         cd ..
                 fi
         done
@@ -108,7 +122,19 @@ if [[ $a == true && $s == true ]]; then
 	echo "-a/--add and -s/--strip aren't compatible. Pick one"
 	exit
 elif [[ $r == true ]]; then
-	recursiveFunc
+	if [[ $a == true ]]; then
+		addFunc "$1"
+		t=a
+		recursiveFunc "$t" "$1"
+	elif [[ $s == true ]]; then
+		stripFunc "$1"
+		t=s
+		recursiveFunc "$t" "$1"
+	else
+		default "$1" "$2"
+		t=d
+		recursiveFunc "$t" "$1" "$2"
+	fi
 elif [[ $a == true ]]; then
 	if [[ $# -ne 1 ]]; then
 		echo "-a/--add requires only 1 file extension input"
