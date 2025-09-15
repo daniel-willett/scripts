@@ -88,7 +88,7 @@ r=false
 while true; do
         case "$1" in
                 -h|--help)
-			less changeFileType-help
+			less /usr/bin/changeFileType-help
                         exit
                         ;;
                 -s|--strip)
