@@ -5,18 +5,18 @@ NAME
 
 SYNOPSIS
 	changeFileType TYPE1 TYPE2
-	changeFileType [OPTIONS] TYPE
+	changeFileType [OPTIONS] TYPE1 (TYPE2)?
 
 DESCRIPTION
-	This changes the file extension within a directory from TYPE1 to TYPE2
+	This changes the file extension within a directory from TYPE1 to TYPE2. Additionally with various options can instead strip/add extensions from/to TYPE1
 
 OPTIONS
 	-h, --help
 		Output this help file
 	-s, --strip
-		Will strip all the files in the directory from TYPE to no file extension
+		Will strip all the files in the directory from TYPE1 to no file extension
 	-a, --add
-		Will add all the files in the directory from no file extension to TYPE
+		Will add all the files in the directory from no file extension to TYPE1
 	-v, --verbose
 		Prints off each change to the terminal
 	-r, --recursive
