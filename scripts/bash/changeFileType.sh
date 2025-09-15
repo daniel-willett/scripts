@@ -121,32 +121,25 @@ done
 if [[ $a == true && $s == true ]]; then
 	echo "-a/--add and -s/--strip aren't compatible. Pick one"
 	exit
-elif [[ $r == true ]]; then
-	if [[ $a == true ]]; then
-		addFunc "$1"
-		t=a
-		recursiveFunc "$t" "$1"
-	elif [[ $s == true ]]; then
-		stripFunc "$1"
-		t=s
-		recursiveFunc "$t" "$1"
-	else
-		default "$1" "$2"
-		t=d
-		recursiveFunc "$t" "$1" "$2"
-	fi
 elif [[ $a == true ]]; then
+	t=a
 	if [[ $# -ne 1 ]]; then
 		echo "-a/--add requires only 1 file extension input"
 		exit
 	fi
 	addFunc "$1"
 elif [[ $s == true ]]; then
+	t=s
 	if [[ $# -ne 1 ]]; then
 		echo "-s/--strip requires only 1 file extension input"
 		exit
 	fi
 	stripFunc "$1"
 else
+	t=d
 	default "$1" "$2"
+fi
+
+if [[ $r == true ]]; then
+	recursiveFunc "$t" "$1" "$2"
 fi
