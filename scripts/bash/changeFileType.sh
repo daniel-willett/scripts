@@ -20,8 +20,8 @@ stripFunc(){
 		if [[ $v == true ]]; then
 			echo "$file --> ${file%.$startExtension}"
 		fi
-                mv -- "$file" "${file%.$startExtension}"
-        done
+		mv -- "$file" "${file%.$startExtension}"
+	done
 	if [[ $v == true ]]; then
 		echo "Stripped all files within this directory with extension $startExtension to no extension"
 	fi
@@ -30,21 +30,21 @@ stripFunc(){
 addFunc(){
 	endExtension=$1
 	for file in * ; do
-                if [[ -f $file && $file != *.* ]]; then
+		if [[ -f $file && $file != *.* ]]; then
 			if [[ $v == true ]]; then
 				echo "$file --> $file.$endExtension"
 			fi
-                        mv -- "$file" "$file.$endExtension"
-                fi
-        done
+			mv -- "$file" "$file.$endExtension"
+		fi
+	done
 	if [[ $v == true ]]; then
 		echo "Added all files within this directory with no extension to $endExtension extension"
 	fi
 }
 
 recursiveFunc() {
-        for d in *; do
-                if [[ -d $d ]]; then
+	for d in *; do
+		if [[ -d $d ]]; then
 			if [[ $v == true ]]; then
 				echo "Moving to $d"
 			fi
@@ -56,10 +56,10 @@ recursiveFunc() {
 			elif [[ $1 == "d" ]]; then
 				default "$2" "$3"
 			fi
-                        recursiveFunc "$1" "$2" "$3"
-                        cd ..
-                fi
-        done
+			recursiveFunc "$1" "$2" "$3"
+			cd ..
+		fi
+	done
 }
 
 ## https://stackoverflow.com/questions/192249/how-do-i-parse-command-line-arguments-in-bash?page=1&tab=scoredesc#tab-top
@@ -86,19 +86,19 @@ v=false
 r=false
 
 while true; do
-        case "$1" in
-                -h|--help)
+	case "$1" in
+		-h|--help)
 			less /usr/bin/changeFileType-help
-                        exit
-                        ;;
-                -s|--strip)
+			exit
+			;;
+		-s|--strip)
 			shift
 			s=true
-                        ;;
-                -a|--add)
+			;;
+		-a|--add)
 			shift
 			a=true
-                        ;;
+			;;
 		-v|--verbose)
 			shift
 			v=true
@@ -107,15 +107,15 @@ while true; do
 			shift
 			r=true
 			;;
-                --)
+		--)
 			shift
-                        break
-                        ;;
-                *)
-                        echo "Error"
-                        exit 3
-                        ;;
-        esac
+			break
+			;;
+		*)
+			echo "Error"
+			exit 3
+			;;
+	esac
 done
 
 if [[ $a == true && $s == true ]]; then
